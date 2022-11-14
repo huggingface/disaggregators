@@ -20,6 +20,8 @@
 __version__ = "0.1.0.dev0"
 
 from packaging import version
+from disaggregators.disaggregation_modules import DisaggregationModule, DisaggregationModuleFactory
+from .disaggregator import Disaggregator
 
 
 SCRIPTS_VERSION = "main" if version.parse(__version__).is_devrelease else __version__
