@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import patch
+
 from disaggregators import DisaggregationModule, DisaggregationModuleFactory
 
 
@@ -17,7 +18,7 @@ class TestModule(unittest.TestCase):
         self.assertEqual(custom_module.name, "dummy-module")
 
 
-@patch('disaggregators.disaggregation_modules.disaggregation_module.disaggregation_modules')
+@patch("disaggregators.disaggregation_modules.disaggregation_module.disaggregation_modules")
 class TestModuleCreator(unittest.TestCase):
     def test_load_module_from_string_id(self, mock_disaggregation_modules):
         mock_disaggregation_modules.AVAILABLE_MODULES = {"dummy-module": DummyModule}
@@ -32,5 +33,5 @@ class TestModuleCreator(unittest.TestCase):
             DisaggregationModuleFactory.create_from_id(module_id="bad-module", column="")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

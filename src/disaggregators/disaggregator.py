@@ -1,14 +1,10 @@
-from typing import Optional, Union, Callable
+from typing import Callable, Optional, Union
 
 from disaggregators.disaggregation_modules import DisaggregationModuleFactory
 
 
 class Disaggregator:
-    def __init__(
-        self,
-        module_ids: Optional[Union[str, list[str]]] = None,
-        column: str = None
-    ):
+    def __init__(self, module_ids: Optional[Union[str, list[str]]] = None, column: str = None):
         if module_ids is None:
             module_ids = []
 

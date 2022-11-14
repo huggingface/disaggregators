@@ -1,17 +1,18 @@
 import unittest
-from unittest.mock import patch, MagicMock
-from disaggregators import Disaggregator, DisaggregationModule
-from tests.test_disaggregation_module import DummyModule
 from typing import Callable
+from unittest.mock import MagicMock, patch
+
+from disaggregators import DisaggregationModule, Disaggregator
+from tests.test_disaggregation_module import DummyModule
 
 
 MockDisaggregationModuleFactory = MagicMock()
-MockDisaggregationModuleFactory.create_from_id.side_effect = (
-    lambda module_id=None, column=None: DummyModule(module_id=module_id, column=column)
+MockDisaggregationModuleFactory.create_from_id.side_effect = lambda module_id=None, column=None: DummyModule(
+    module_id=module_id, column=column
 )
 
 
-@patch('disaggregators.disaggregator.DisaggregationModuleFactory', MockDisaggregationModuleFactory)
+@patch("disaggregators.disaggregator.DisaggregationModuleFactory", MockDisaggregationModuleFactory)
 class TestDisaggregator(unittest.TestCase):
     def test_create_empty_disaggregator(self):
         disagg = Disaggregator()
@@ -44,5 +45,5 @@ class TestDisaggregator(unittest.TestCase):
         self.assertEqual(disagg_func({"a": 1, "b": 2}), {"dummy-one": True, "dummy-two": True})
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

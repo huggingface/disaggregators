@@ -1,4 +1,5 @@
 import unittest
+
 from disaggregators.disaggregation_modules.pronouns import Pronouns
 
 
@@ -14,5 +15,5 @@ class TestPronouns(unittest.TestCase):
         self.assertEqual(results, {"he/him": True, "she/her": False, "they/them": False})
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
