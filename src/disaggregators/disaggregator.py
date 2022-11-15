@@ -1,4 +1,4 @@
-from typing import Callable, Optional, Union
+from typing import Callable, Optional, Set, Union
 
 from disaggregators.disaggregation_modules import DisaggregationModuleFactory
 
@@ -19,4 +19,11 @@ class Disaggregator:
 
     def get_function(self) -> Callable:
         # Merge dicts - https://stackoverflow.com/a/3495395
-        return lambda x: {k: v for d in [module(x) for module in self.modules] for k, v in d.items()}
+        return lambda x: {
+            k: v
+            for d in [{module.get_label_name(_k): _v for _k, _v in module(x).items()} for module in self.modules]
+            for k, v in d.items()
+        }
+
+    def get_disaggregation_sets(self) -> dict[str, Set]:
+        return {module.name: module.get_label_names() for module in self.modules}
