@@ -1,10 +1,10 @@
-from typing import Callable, Optional, Set, Union
+from typing import Callable, Optional, Set, Union, List, Dict
 
 from disaggregators.disaggregation_modules import DisaggregationModuleFactory
 
 
 class Disaggregator:
-    def __init__(self, module_ids: Optional[Union[str, list[str]]] = None, column: str = None):
+    def __init__(self, module_ids: Optional[Union[str, List[str]]] = None, column: str = None):
         if module_ids is None:
             module_ids = []
 
@@ -25,5 +25,5 @@ class Disaggregator:
             for k, v in d.items()
         }
 
-    def get_disaggregation_sets(self) -> dict[str, Set]:
+    def get_disaggregation_sets(self) -> Dict[str, Set]:
         return {module.name: module.get_label_names() for module in self.modules}
