@@ -23,16 +23,16 @@ You will likely want to use 🤗 Datasets with `disaggregators`.
 pip install datasets
 ```
 
-The snippet below loads the IMDB dataset from the Hugging Face Hub, and initializes a disaggregator for "pronouns" that will run on the IMDB dataset's "text" column. Note that if you would like to run multiple disaggregations, you can pass a list to the `Disaggregator` constructor (e.g. `Disaggregator(["pronouns", "sentiment"], column="text")`). We then use the 🤗 Datasets `map` method to apply the disaggregation to the dataset.
+The snippet below loads the IMDB dataset from the Hugging Face Hub, and initializes a disaggregator for "pronoun" that will run on the IMDB dataset's "text" column. Note that if you would like to run multiple disaggregations, you can pass a list to the `Disaggregator` constructor (e.g. `Disaggregator(["pronoun", "sentiment"], column="text")`). We then use the 🤗 Datasets `map` method to apply the disaggregation to the dataset.
 
 ```python
 from disaggregators import Disaggregator
 from datasets import load_dataset
 
 dataset = load_dataset("imdb", split="train")
-disaggregator = Disaggregator("pronouns", column="text")
+disaggregator = Disaggregator("pronoun", column="text")
 
-ds = dataset.map(disaggregator.get_function())  # New boolean columns are added for she/her, he/him, and they/them
+ds = dataset.map(disaggregator)  # New boolean columns are added for she/her, he/him, and they/them
 ```
 
 The resulting dataset can now be used for data exploration and disaggregated model evaluation.

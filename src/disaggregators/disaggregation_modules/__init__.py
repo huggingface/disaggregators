@@ -1,7 +1,7 @@
 from .disaggregation_module import DisaggregationModule, DisaggregationModuleFactory, DisaggregationModuleLabels
-from .pronouns import Pronouns
+from .pronoun import Pronoun
 
 
-AVAILABLE_MODULES = {"pronouns": Pronouns}
+AVAILABLE_MODULES = {"pronoun": Pronoun}
 
 __all__ = ["DisaggregationModule", "DisaggregationModuleFactory", "DisaggregationModuleLabels"]
