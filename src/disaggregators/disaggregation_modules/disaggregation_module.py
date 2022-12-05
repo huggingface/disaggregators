@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Set, Type, List
+from typing import List, Set, Type
 
 from disaggregators import disaggregation_modules
 

@@ -1,5 +1,5 @@
-from datasets import load_dataset
 import spacy
+from datasets import load_dataset
 
 from ..disaggregation_module import DisaggregationModule, DisaggregationModuleLabels
 

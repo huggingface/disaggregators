@@ -20,8 +20,9 @@ class Disaggregator:
     def get_function(self) -> Callable:
         # Merge dicts - https://stackoverflow.com/a/3495395
         return lambda x: {
-            f"{d[0]}.{k.value}": v for d in [(module.name, module(x))
-                                             for module in self.modules] for k, v in d[1].items()
+            f"{d[0]}.{k.value}": v
+            for d in [(module.name, module(x)) for module in self.modules]
+            for k, v in d[1].items()
         }
 
     def __call__(self, x) -> Callable:
