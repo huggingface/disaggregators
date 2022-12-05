@@ -24,7 +24,7 @@ class Age(DisaggregationModule):
         except OSError:
             raise ValueError(
                 f"This disaggregation module depends on the {spacy_model} model from spaCy.\n"
-                "You can install it by running: python -m spacy download en_core_web_sm"
+                f"You can install it by running: python -m spacy download {spacy_model}"
             )
 
     def __call__(self, row, *args, **kwargs):

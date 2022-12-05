@@ -13,7 +13,10 @@ class DummyModule(DisaggregationModule):
         super().__init__(module_id=module_id, column=column, labels=DummyLabels)
 
     def __call__(self, row, *args, **kwargs):
-        return {self.name: True}
+        return {
+            DummyLabels.DUMMY_ONE: True,
+            DummyLabels.DUMMY_TWO: True
+        }
 
 
 def test_create_subclassed_module():
