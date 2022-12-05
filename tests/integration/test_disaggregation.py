@@ -1,18 +1,18 @@
 import pandas as pd
 import pytest
-from datasets import Dataset, load_dataset
+from datasets import Dataset
 
 from disaggregators import Disaggregator
 
 
 @pytest.fixture()
 def dataset():
-    return load_dataset("medmcqa", split="test").select(range(100))
+    return Dataset.from_dict({"text": ["Hello world!", "Fizz buzz."]})
 
 
 @pytest.fixture()
 def disaggregator():
-    return Disaggregator(["age", "gender"], column="question")
+    return Disaggregator(["age", "gender"], column="text")
 
 
 @pytest.fixture()
@@ -39,9 +39,8 @@ def test_pandas(dataset, disaggregator, expected_features):
     assert expected_features.issubset(set(df.columns))
 
 
-def test_each_module(module):
+def test_each_module(dataset, module):
     disaggregator = Disaggregator(module, column="text")
-    dataset = Dataset.from_dict({"text": ["Hello", "World"]})
     ds_mapped = dataset.map(disaggregator)
 
     expected_features = disaggregator.fields
