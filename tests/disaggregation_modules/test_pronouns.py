@@ -1,19 +1,14 @@
-import unittest
-
-from disaggregators.disaggregation_modules.pronouns import Pronouns
+from disaggregators.disaggregation_modules.pronouns import Pronouns, PronounsLabels
 
 
-class TestPronouns(unittest.TestCase):
-    def test_initialize(self):
-        disagg_module = Pronouns(column=None)
-        self.assertEqual(disagg_module.name, "pronouns")
-
-    def test_call_default_pronouns(self):
-        data = {"text": "He went to the park."}
-        disagg_module = Pronouns(column="text")
-        results = disagg_module(data)
-        self.assertEqual(results, {"he/him": True, "she/her": False, "they/them": False})
+def test_initialize():
+    disagg_module = Pronouns(column=None)
+    assert disagg_module.name == "pronouns"
+    assert disagg_module.labels == {PronounsLabels.HE_HIM, PronounsLabels.SHE_HER, PronounsLabels.THEY_THEM}
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_call_default_pronouns():
+    data = {"text": "He went to the park."}
+    disagg_module = Pronouns(column="text")
+    results = disagg_module(data)
+    assert results == {PronounsLabels.HE_HIM: True, PronounsLabels.SHE_HER: False, PronounsLabels.THEY_THEM: False}
