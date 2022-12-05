@@ -22,16 +22,16 @@ class TestDisaggregator:
         assert len(disagg.modules) == 0
 
     def test_create_disaggregator_with_single_module(self):
-        disagg = Disaggregator("pronouns")
+        disagg = Disaggregator("pronoun")
         assert len(disagg.modules) == 1
         assert isinstance(disagg.modules[0], DisaggregationModule)
-        assert disagg.modules[0].name == "pronouns"
+        assert disagg.modules[0].name == "pronoun"
 
     def test_create_disaggregator_with_multiple_modules(self):
-        disagg = Disaggregator(["pronouns", "spelling"])
+        disagg = Disaggregator(["pronoun", "spelling"])
         assert len(disagg.modules) == 2
         assert all([isinstance(module, DisaggregationModule) for module in disagg.modules])
-        assert disagg.modules[0].name == "pronouns"
+        assert disagg.modules[0].name == "pronoun"
         assert disagg.modules[1].name == "spelling"
 
     def test_get_disaggregator_function_single_aggregation_module(self):

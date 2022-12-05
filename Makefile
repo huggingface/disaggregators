@@ -17,3 +17,6 @@ style:
 
 test:
 	python -m pytest -n auto --dist=loadfile -s -v ./tests/
+
+test-fast:
+	python -m pytest -m "not slow" -n auto --dist=loadfile -s -v ./tests/

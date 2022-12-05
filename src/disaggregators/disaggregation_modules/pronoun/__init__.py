@@ -1,19 +1,19 @@
 from ..disaggregation_module import DisaggregationModule, DisaggregationModuleLabels
 
 
-class PronounsLabels(DisaggregationModuleLabels):
+class PronounLabels(DisaggregationModuleLabels):
     SHE_HER = "she_her"
     HE_HIM = "he_him"
     THEY_THEM = "they_them"
 
 
-class Pronouns(DisaggregationModule):
+class Pronoun(DisaggregationModule):
     def __init__(self, *args, **kwargs):
-        super().__init__(module_id="pronouns", labels=PronounsLabels, *args, **kwargs)
+        super().__init__(module_id="pronoun", labels=PronounLabels, *args, **kwargs)
         self.AVAILABLE_PRONOUNS = {
-            PronounsLabels.SHE_HER: {"she", "her", "hers", "herself"},
-            PronounsLabels.HE_HIM: {"he", "him", "his", "himself"},
-            PronounsLabels.THEY_THEM: {"they", "them", "their", "theirs", "themself", "themselves"},
+            PronounLabels.SHE_HER: {"she", "her", "hers", "herself"},
+            PronounLabels.HE_HIM: {"he", "him", "his", "himself"},
+            PronounLabels.THEY_THEM: {"they", "them", "their", "theirs", "themself", "themselves"},
         }
 
     def __call__(self, row, *args, **kwargs):
