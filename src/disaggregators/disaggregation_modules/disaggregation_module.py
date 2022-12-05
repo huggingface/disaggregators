@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Set, Type
+from typing import Set, Type, List
 
 from disaggregators import disaggregation_modules
 
@@ -14,6 +14,7 @@ class DisaggregationModule(ABC):
         self.name = module_id
         self.column = column
         self.labels: Set[DisaggregationModuleLabels] = set(labels)
+        self.citations: List[str] = []
 
     @abstractmethod
     def __call__(self, row, *args, **kwargs):

@@ -36,19 +36,23 @@ class TestDisaggregator:
 
     def test_get_disaggregator_function_single_aggregation_module(self):
         disagg = Disaggregator("dummy-module")
-        assert isinstance(disagg(), Callable)
-        assert disagg()({"a": 1, "b": 2}) == {"dummy-module": True}
+        assert disagg({"a": 1, "b": 2}) == {"dummy-module.dummy-value-1": True, "dummy-module.dummy-value-2": True}
         disagg_func = disagg.get_function()
         assert isinstance(disagg_func, Callable)
-        assert disagg_func({"a": 1, "b": 2}) == {"dummy-module": True}
+        assert disagg_func({"a": 1, "b": 2}) == {"dummy-module.dummy-value-1": True, "dummy-module.dummy-value-2": True}
 
     def test_get_disaggregator_function_multiple_aggregation_modules(self):
         disagg = Disaggregator(["dummy-one", "dummy-two"])
-        assert isinstance(disagg(), Callable)
-        assert disagg()({"a": 1, "b": 2}) == {"dummy-one": True, "dummy-two": True}
+        assert disagg({"a": 1, "b": 2}) == {
+            "dummy-one.dummy-value-1": True, "dummy-one.dummy-value-2": True,
+            "dummy-two.dummy-value-1": True, "dummy-two.dummy-value-2": True,
+        }
         disagg_func = disagg.get_function()
         assert isinstance(disagg_func, Callable)
-        assert disagg_func({"a": 1, "b": 2}) == {"dummy-one": True, "dummy-two": True}
+        assert disagg_func({"a": 1, "b": 2}) == {
+            "dummy-one.dummy-value-1": True, "dummy-one.dummy-value-2": True,
+            "dummy-two.dummy-value-1": True, "dummy-two.dummy-value-2": True,
+        }
 
     @pytest.mark.parametrize(
         "modules,expected",

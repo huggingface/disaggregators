@@ -59,6 +59,7 @@ REQUIRED_PKGS = [
     # Utilities from PyPA to e.g., compare versions
     "packaging",
     "spacy",
+    "datasets",
 ]
 
 TESTS_REQUIRE = [
