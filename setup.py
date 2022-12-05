@@ -58,6 +58,7 @@ from setuptools import find_packages, setup
 REQUIRED_PKGS = [
     # Utilities from PyPA to e.g., compare versions
     "packaging",
+    "spacy",
 ]
 
 TESTS_REQUIRE = [

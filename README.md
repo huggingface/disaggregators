@@ -10,6 +10,8 @@ The `disaggregators` library allows you to easily add new features to your datas
 
 `pip install disaggregators` will fetch the latest release from PyPI.
 
+Note that some disaggregation modules require extra dependencies such as SpaCy modules, which may need to be installed manually. If these dependencies aren't installed, `disaggregators` will inform you about how to install them.
+
 To install directly from this GitHub repo, use the following command:
 ```shell
 pip install git+https://github.com/huggingface/disaggregators.git
