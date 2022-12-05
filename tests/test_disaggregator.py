@@ -1,49 +1,71 @@
-import unittest
 from typing import Callable
-from unittest.mock import MagicMock, patch
+
+import pytest
 
 from disaggregators import DisaggregationModule, Disaggregator
 from tests.test_disaggregation_module import DummyModule
 
 
-MockDisaggregationModuleFactory = MagicMock()
-MockDisaggregationModuleFactory.create_from_id.side_effect = lambda module_id=None, column=None: DummyModule(
-    module_id=module_id, column=column
-)
+class TestDisaggregator:
+    @pytest.fixture(autouse=True)
+    def mock_module_factory(self, mocker):
+        mock_factory = mocker.MagicMock()
+        mock_factory.create_from_id.side_effect = lambda module_id=None, column=None: DummyModule(
+            module_id=module_id, column=column
+        )
 
+        mocker.patch("disaggregators.disaggregator.DisaggregationModuleFactory", mock_factory)
 
-@patch("disaggregators.disaggregator.DisaggregationModuleFactory", MockDisaggregationModuleFactory)
-class TestDisaggregator(unittest.TestCase):
     def test_create_empty_disaggregator(self):
         disagg = Disaggregator()
-        self.assertIsInstance(disagg.modules, list)
-        self.assertEqual(len(disagg.modules), 0)
+        assert isinstance(disagg.modules, list)
+        assert len(disagg.modules) == 0
 
     def test_create_disaggregator_with_single_module(self):
         disagg = Disaggregator("pronouns")
-        self.assertEqual(len(disagg.modules), 1)
-        self.assertIsInstance(disagg.modules[0], DisaggregationModule)
-        self.assertEqual(disagg.modules[0].name, "pronouns")
+        assert len(disagg.modules) == 1
+        assert isinstance(disagg.modules[0], DisaggregationModule)
+        assert disagg.modules[0].name == "pronouns"
 
     def test_create_disaggregator_with_multiple_modules(self):
         disagg = Disaggregator(["pronouns", "spelling"])
-        self.assertEqual(len(disagg.modules), 2)
-        self.assertTrue(all([isinstance(module, DisaggregationModule) for module in disagg.modules]))
-        self.assertEqual(disagg.modules[0].name, "pronouns")
-        self.assertEqual(disagg.modules[1].name, "spelling")
+        assert len(disagg.modules) == 2
+        assert all([isinstance(module, DisaggregationModule) for module in disagg.modules])
+        assert disagg.modules[0].name == "pronouns"
+        assert disagg.modules[1].name == "spelling"
 
     def test_get_disaggregator_function_single_aggregation_module(self):
         disagg = Disaggregator("dummy-module")
+        assert isinstance(disagg(), Callable)
+        assert disagg()({"a": 1, "b": 2}) == {"dummy-module": True}
         disagg_func = disagg.get_function()
-        self.assertIsInstance(disagg_func, Callable)
-        self.assertEqual(disagg_func({"a": 1, "b": 2}), {"dummy-module": True})
+        assert isinstance(disagg_func, Callable)
+        assert disagg_func({"a": 1, "b": 2}) == {"dummy-module": True}
 
     def test_get_disaggregator_function_multiple_aggregation_modules(self):
         disagg = Disaggregator(["dummy-one", "dummy-two"])
+        assert isinstance(disagg(), Callable)
+        assert disagg()({"a": 1, "b": 2}) == {"dummy-one": True, "dummy-two": True}
         disagg_func = disagg.get_function()
-        self.assertIsInstance(disagg_func, Callable)
-        self.assertEqual(disagg_func({"a": 1, "b": 2}), {"dummy-one": True, "dummy-two": True})
+        assert isinstance(disagg_func, Callable)
+        assert disagg_func({"a": 1, "b": 2}) == {"dummy-one": True, "dummy-two": True}
 
-
-if __name__ == "__main__":
-    unittest.main()
+    @pytest.mark.parametrize(
+        "modules,expected",
+        [
+            ([], set()),
+            (["dummy-one"], {"dummy-one.dummy-value-1", "dummy-one.dummy-value-2"}),
+            (
+                ["dummy-one", "dummy-two"],
+                {
+                    "dummy-one.dummy-value-1",
+                    "dummy-one.dummy-value-2",
+                    "dummy-two.dummy-value-1",
+                    "dummy-two.dummy-value-2",
+                },
+            ),
+        ],
+    )
+    def test_get_fields(self, modules, expected):
+        disagg = Disaggregator(modules)
+        assert disagg.fields == expected
