@@ -18,7 +18,7 @@ class Disaggregator:
     def get_function(self) -> Callable:
         # Merge dicts - https://stackoverflow.com/a/3495395
         return lambda x: {
-            f"{d[0]}.{k.value}": v
+            f"{d[0]}.{str(k)}": v
             for d in [(module.name, module(x)) for module in self.modules]
             for k, v in d[1].items()
         }
@@ -28,4 +28,4 @@ class Disaggregator:
 
     @property
     def fields(self) -> Set:
-        return {*[f"{module.name}.{label.value}" for module in self.modules for label in module.labels]}
+        return {*[f"{module.name}.{str(label)}" for module in self.modules for label in module.labels]}

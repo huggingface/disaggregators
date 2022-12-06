@@ -12,3 +12,20 @@ def test_call_default():
     disagg_module = Pronoun(column="text")
     results = disagg_module(data)
     assert results == {PronounLabels.HE_HIM: True, PronounLabels.SHE_HER: False, PronounLabels.THEY_THEM: False}
+
+
+def test_call_custom():
+    class CustomPronounLabels(PronounLabels):
+        ZE_ZIR = "ze_zir"
+
+    _CUSTOM_PRONOUN_MAPPING = {CustomPronounLabels.ZE_ZIR: {"ze", "zir", "zirs", "zirself"}}
+
+    data = {"text": "Ze went to the park."}
+    disagg_module = Pronoun(config={"labels": CustomPronounLabels, "pronouns": _CUSTOM_PRONOUN_MAPPING}, column="text")
+    results = disagg_module(data)
+    assert results == {
+        CustomPronounLabels.ZE_ZIR: True,
+        CustomPronounLabels.HE_HIM: False,
+        CustomPronounLabels.SHE_HER: False,
+        CustomPronounLabels.THEY_THEM: False,
+    }

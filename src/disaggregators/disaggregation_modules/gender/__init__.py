@@ -45,7 +45,7 @@ class Gender(DisaggregationModule):
         ]
 
     def __call__(self, row, *args, **kwargs):
-        return_genders = {gender: False for gender in GenderLabels}
+        return_genders = {gender: False for gender in list(GenderLabels)}
 
         doc = self.nlp(row[self.column])
 

@@ -1,15 +1,13 @@
 from abc import ABC, abstractmethod
-from enum import Enum
-from typing import List, Type, Union, Dict, Optional
+from typing import Dict, List, Optional, Type, Union
+
+from aenum import Constant
 
 from disaggregators import disaggregation_modules
 
 
-class DisaggregationModuleLabels(Enum):
-    def __getattr__(self, item):
-        if item != '_value_':
-            return getattr(self.value, item).value
-        raise AttributeError
+class DisaggregationModuleLabels(Constant):
+    pass
 
 
 class DisaggregationModule(ABC):

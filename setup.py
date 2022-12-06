@@ -60,6 +60,7 @@ REQUIRED_PKGS = [
     "packaging",
     "spacy",
     "datasets",
+    "aenum",
 ]
 
 TESTS_REQUIRE = [

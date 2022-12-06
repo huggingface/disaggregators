@@ -11,7 +11,7 @@ class DummyLabels(DisaggregationModuleLabels):
 class DummyModule(DisaggregationModule):
     labels = DummyLabels
 
-    def __init__(self, module_id="dummy-module",  *args, **kwargs):
+    def __init__(self, module_id="dummy-module", *args, **kwargs):
         super().__init__(module_id=module_id, *args, **kwargs)
 
     def _apply_config(self, config):
@@ -51,9 +51,7 @@ def test_override_module_config():
         DUMMY_TWO = "dummy-value-2"
         DUMMY_THREE = "dummy-value-3"
 
-    custom_module = DummyModule(config={
-        "labels": CustomDummyLabels
-    }, column=None)
+    custom_module = DummyModule(config={"labels": CustomDummyLabels}, column=None)
 
     assert custom_module.labels == CustomDummyLabels
 

@@ -23,7 +23,7 @@ def test_initialize():
     ],
 )
 def test_call_default(text, expected):
-    base_labels = {age: False for age in AgeLabels}
+    base_labels = {age: False for age in list(AgeLabels)}
     data = {"text": text}
     disagg_module = Age(column="text")
     results = disagg_module(data)
