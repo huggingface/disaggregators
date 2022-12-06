@@ -10,8 +10,10 @@ class GenderLabels(DisaggregationModuleLabels):
 
 
 class Gender(DisaggregationModule):
+    labels = GenderLabels
+
     def __init__(self, *args, **kwargs):
-        super().__init__(module_id="gender", labels=GenderLabels, *args, **kwargs)
+        super().__init__(module_id="gender", *args, **kwargs)
         self.gender_df = load_dataset("md_gender_bias", "gendered_words", split="train").to_pandas()
 
         spacy_model = "en_core_web_lg"

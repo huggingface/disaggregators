@@ -1,24 +1,38 @@
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import List, Type, Union
+from typing import List, Type, Union, Dict, Optional
 
 from disaggregators import disaggregation_modules
 
 
 class DisaggregationModuleLabels(Enum):
-    pass
+    def __getattr__(self, item):
+        if item != '_value_':
+            return getattr(self.value, item).value
+        raise AttributeError
 
 
 class DisaggregationModule(ABC):
-    def __init__(self, module_id: str, column: str, labels: Type[DisaggregationModuleLabels]):
+    def __init__(self, module_id: str, column: Optional[str], config: Dict = None):
         self.name = module_id
         self.column = column
-        self.labels = labels
         self.citations: List[str] = []
+
+        if config:
+            self._apply_config(config)
 
     @abstractmethod
     def __call__(self, row, *args, **kwargs):
         raise NotImplementedError()
+
+    @property
+    @abstractmethod
+    def labels(self) -> Type[DisaggregationModuleLabels]:
+        pass
+
+    # TODO: Enforce typing for the config object.
+    def _apply_config(self, config: Dict):
+        pass
 
 
 class CustomDisaggregator(DisaggregationModule, ABC):
@@ -28,7 +42,7 @@ class CustomDisaggregator(DisaggregationModule, ABC):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(module_id=self.module_id, labels=self.labels, *args, **kwargs)
+        super().__init__(module_id=self.module_id, *args, **kwargs)
 
     @property
     @abstractmethod
@@ -43,21 +57,21 @@ class CustomDisaggregator(DisaggregationModule, ABC):
 
 class DisaggregationModuleFactory:
     @staticmethod
-    def create_module(module: Union[str, Type[CustomDisaggregator]], column: str):
+    def create_module(module: Union[str, Type[CustomDisaggregator]], *args, **kwargs):
         if isinstance(module, str):
-            return DisaggregationModuleFactory.create_from_id(module, column)
+            return DisaggregationModuleFactory.create_from_id(module, *args, **kwargs)
         elif issubclass(module, CustomDisaggregator):
-            return DisaggregationModuleFactory.create_from_class(module, column)
+            return DisaggregationModuleFactory.create_from_class(module, *args, **kwargs)
         else:
             raise ValueError("Invalid module type received.")
 
     @staticmethod
-    def create_from_id(module_id: str, column: str) -> DisaggregationModule:
+    def create_from_id(module_id: str, *args, **kwargs) -> DisaggregationModule:
         if module_id not in disaggregation_modules.AVAILABLE_MODULES:
             raise ValueError("Invalid module_id received.")
 
-        return disaggregation_modules.AVAILABLE_MODULES[module_id](column=column)
+        return disaggregation_modules.AVAILABLE_MODULES[module_id](*args, **kwargs)
 
     @staticmethod
-    def create_from_class(module: Type[CustomDisaggregator], column: str) -> DisaggregationModule:
-        return module(column=column)
+    def create_from_class(module: Type[CustomDisaggregator], *args, **kwargs) -> DisaggregationModule:
+        return module(*args, **kwargs)

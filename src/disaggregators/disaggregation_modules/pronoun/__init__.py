@@ -8,8 +8,10 @@ class PronounLabels(DisaggregationModuleLabels):
 
 
 class Pronoun(DisaggregationModule):
+    labels = PronounLabels
+
     def __init__(self, *args, **kwargs):
-        super().__init__(module_id="pronoun", labels=PronounLabels, *args, **kwargs)
+        super().__init__(module_id="pronoun", *args, **kwargs)
         self.AVAILABLE_PRONOUNS = {
             PronounLabels.SHE_HER: {"she", "her", "hers", "herself"},
             PronounLabels.HE_HIM: {"he", "him", "his", "himself"},

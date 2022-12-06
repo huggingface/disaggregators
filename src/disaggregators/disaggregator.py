@@ -4,7 +4,7 @@ from disaggregators.disaggregation_modules import CustomDisaggregator, Disaggreg
 
 
 class Disaggregator:
-    def __init__(self, module: Optional[Union[str, Type[CustomDisaggregator], List[str]]] = None, column: str = None):
+    def __init__(self, module: Optional[Union[str, Type[CustomDisaggregator], List[str]]] = None, *args, **kwargs):
         if module is None:
             module = []
 
@@ -13,7 +13,7 @@ class Disaggregator:
         else:
             module_list = module
 
-        self.modules = [DisaggregationModuleFactory.create_module(module, column=column) for module in module_list]
+        self.modules = [DisaggregationModuleFactory.create_module(module, *args, **kwargs) for module in module_list]
 
     def get_function(self) -> Callable:
         # Merge dicts - https://stackoverflow.com/a/3495395

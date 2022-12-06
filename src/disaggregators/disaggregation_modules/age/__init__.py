@@ -14,8 +14,10 @@ class AgeLabels(DisaggregationModuleLabels):
 
 
 class Age(DisaggregationModule):
+    labels = AgeLabels
+
     def __init__(self, *args, **kwargs):
-        super().__init__(module_id="age", labels=AgeLabels, *args, **kwargs)
+        super().__init__(module_id="age", *args, **kwargs)
         self.AGES = [AgeLabels.CHILD, AgeLabels.YOUTH, AgeLabels.ADULT, AgeLabels.SENIOR]
         self.AGE_BREAKPOINTS = [0, 12, 20, 65]
         spacy_model = "en_core_web_lg"

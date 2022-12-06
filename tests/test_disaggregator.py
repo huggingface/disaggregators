@@ -96,7 +96,7 @@ def custom_module():
 
 
 def test_inject_custom_module_subclass(custom_module):
-    disagg = Disaggregator(custom_module)
+    disagg = Disaggregator(custom_module, column=None)
     assert disagg.fields == {"custom.dummy-value-1", "custom.dummy-value-2"}
 
     ds = Dataset.from_dict({"text": ["Hello world!"]}).map(disagg)
