@@ -7,7 +7,7 @@ def test_initialize():
     assert set(disagg_module.labels) == {PronounLabels.HE_HIM, PronounLabels.SHE_HER, PronounLabels.THEY_THEM}
 
 
-def test_call_default_pronouns():
+def test_call_default():
     data = {"text": "He went to the park."}
     disagg_module = Pronoun(column="text")
     results = disagg_module(data)

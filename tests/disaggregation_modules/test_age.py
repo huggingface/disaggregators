@@ -22,7 +22,7 @@ def test_initialize():
         ("Farzaneh is 18 years old and her grandmother is 86 yrs old", [AgeLabels.YOUTH, AgeLabels.SENIOR]),
     ],
 )
-def test_call_default_pronouns(text, expected):
+def test_call_default(text, expected):
     base_labels = {age: False for age in AgeLabels}
     data = {"text": text}
     disagg_module = Age(column="text")

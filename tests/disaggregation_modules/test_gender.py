@@ -21,7 +21,7 @@ def test_initialize():
         ("The guy gave the woman a high-five.", [GenderLabels.MALE, GenderLabels.FEMALE]),
     ],
 )
-def test_call_default_pronouns(text, expected):
+def test_call_default(text, expected):
     base_labels = {age: False for age in GenderLabels}
     data = {"text": text}
     disagg_module = Gender(column="text")
