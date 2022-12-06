@@ -24,6 +24,7 @@ from packaging import version
 from disaggregators.disaggregation_modules import (
     CustomDisaggregator,
     DisaggregationModule,
+    DisaggregationModuleConfig,
     DisaggregationModuleFactory,
     DisaggregationModuleLabels,
 )

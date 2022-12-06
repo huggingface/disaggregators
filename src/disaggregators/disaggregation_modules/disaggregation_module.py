@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional, Type, Union
+from typing import List, Optional, Type, Union
 
 from aenum import Constant
 
@@ -10,8 +10,12 @@ class DisaggregationModuleLabels(Constant):
     pass
 
 
+class DisaggregationModuleConfig:
+    labels: Type[DisaggregationModuleLabels]
+
+
 class DisaggregationModule(ABC):
-    def __init__(self, module_id: str, column: Optional[str], config: Dict = None):
+    def __init__(self, module_id: str, column: Optional[str], config: DisaggregationModuleConfig = None):
         self.name = module_id
         self.column = column
         self.citations: List[str] = []
@@ -28,9 +32,12 @@ class DisaggregationModule(ABC):
     def labels(self) -> Type[DisaggregationModuleLabels]:
         pass
 
-    # TODO: Enforce typing for the config object.
-    def _apply_config(self, config: Dict):
+    def _apply_config(self, config: DisaggregationModuleConfig):
         pass
+
+    @property
+    def field_names(self):
+        return {f"{self.name}.{x}" for x in list(self.labels)}
 
 
 class CustomDisaggregator(DisaggregationModule, ABC):
@@ -55,9 +62,11 @@ class CustomDisaggregator(DisaggregationModule, ABC):
 
 class DisaggregationModuleFactory:
     @staticmethod
-    def create_module(module: Union[str, Type[CustomDisaggregator]], *args, **kwargs):
+    def create_module(module: Union[str, Type[CustomDisaggregator], DisaggregationModule], *args, **kwargs):
         if isinstance(module, str):
             return DisaggregationModuleFactory.create_from_id(module, *args, **kwargs)
+        elif isinstance(module, DisaggregationModule):
+            return module
         elif issubclass(module, CustomDisaggregator):
             return DisaggregationModuleFactory.create_from_class(module, *args, **kwargs)
         else:

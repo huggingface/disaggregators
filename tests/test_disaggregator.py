@@ -4,14 +4,13 @@ import pytest
 from datasets import Dataset
 
 from disaggregators import CustomDisaggregator, DisaggregationModule, Disaggregator
-from tests.test_disaggregation_module import DummyLabels, DummyModule
 
 
 class TestDisaggregator:
     @pytest.fixture(autouse=True)
-    def mock_module_factory(self, mocker):
+    def mock_module_factory(self, mocker, dummy_module):
         mock_factory = mocker.MagicMock()
-        mock_factory.create_module.side_effect = lambda module_id=None, column=None: DummyModule(
+        mock_factory.create_module.side_effect = lambda module_id=None, column=None: dummy_module(
             module_id=module_id, column=column
         )
 
@@ -84,21 +83,30 @@ class TestDisaggregator:
 
 
 @pytest.fixture
-def custom_module():
+def custom_module(dummy_labels):
     class CustomModule(CustomDisaggregator):
         module_id = "custom"
-        labels = DummyLabels
+        labels = dummy_labels
 
         def __call__(self, row, *args, **kwargs):
-            return {DummyLabels.DUMMY_ONE: "cat", DummyLabels.DUMMY_TWO: "dog"}
+            return {dummy_labels.DUMMY_ONE: "cat", dummy_labels.DUMMY_TWO: "dog"}
 
     return CustomModule
 
 
-def test_inject_custom_module_subclass(custom_module):
+def test_inject_custom_module_subclass(custom_module, dummy_labels):
     disagg = Disaggregator(custom_module, column=None)
     assert disagg.fields == {"custom.dummy-value-1", "custom.dummy-value-2"}
 
     ds = Dataset.from_dict({"text": ["Hello world!"]}).map(disagg)
-    assert set(ds.features) == {"text", "custom.dummy-value-1", "custom.dummy-value-2"}
+    assert set(ds.features) == {"text", *disagg.fields}
     assert ds[0] == {"text": "Hello world!", "custom.dummy-value-1": "cat", "custom.dummy-value-2": "dog"}
+
+
+def test_module_instance(configured_module, configured_dummy_expected_results):
+    disagg = Disaggregator(configured_module, column=None)
+    assert disagg.fields == configured_module.field_names
+
+    ds = Dataset.from_dict({"text": ["Hello world!"]}).map(disagg)
+    assert set(ds.features) == {"text", *disagg.fields}
+    assert ds[0] == {"text": "Hello world!", **configured_dummy_expected_results}

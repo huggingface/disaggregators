@@ -3,6 +3,7 @@ import pytest
 from datasets import Dataset
 
 from disaggregators import Disaggregator
+from disaggregators.disaggregation_modules.pronoun import Pronoun, PronounConfig, PronounLabels
 
 
 @pytest.fixture()
@@ -12,7 +13,16 @@ def dataset():
 
 @pytest.fixture()
 def disaggregator():
-    return Disaggregator(["age", "gender"], column="text")
+    class CustomPronounLabels(PronounLabels):
+        ZE_ZIR = "ze_zir"
+
+    _CUSTOM_PRONOUN_MAPPING = {CustomPronounLabels.ZE_ZIR: {"ze", "zir", "zirs", "zirself"}}
+
+    disagg_module = Pronoun(
+        config=PronounConfig(labels=CustomPronounLabels, pronouns=_CUSTOM_PRONOUN_MAPPING), column="text"
+    )
+
+    return Disaggregator(["age", "gender", disagg_module], column="text")
 
 
 @pytest.fixture()

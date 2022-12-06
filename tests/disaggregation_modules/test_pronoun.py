@@ -1,4 +1,4 @@
-from disaggregators.disaggregation_modules.pronoun import Pronoun, PronounLabels
+from disaggregators.disaggregation_modules.pronoun import Pronoun, PronounConfig, PronounLabels
 
 
 def test_initialize():
@@ -21,7 +21,9 @@ def test_call_custom():
     _CUSTOM_PRONOUN_MAPPING = {CustomPronounLabels.ZE_ZIR: {"ze", "zir", "zirs", "zirself"}}
 
     data = {"text": "Ze went to the park."}
-    disagg_module = Pronoun(config={"labels": CustomPronounLabels, "pronouns": _CUSTOM_PRONOUN_MAPPING}, column="text")
+    disagg_module = Pronoun(
+        config=PronounConfig(labels=CustomPronounLabels, pronouns=_CUSTOM_PRONOUN_MAPPING), column="text"
+    )
     results = disagg_module(data)
     assert results == {
         CustomPronounLabels.ZE_ZIR: True,

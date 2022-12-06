@@ -1,10 +1,18 @@
-from ..disaggregation_module import DisaggregationModule, DisaggregationModuleLabels
+from typing import Dict, Set, Type
+
+from ..disaggregation_module import DisaggregationModule, DisaggregationModuleConfig, DisaggregationModuleLabels
 
 
 class PronounLabels(DisaggregationModuleLabels):
     SHE_HER = "she_her"
     HE_HIM = "he_him"
     THEY_THEM = "they_them"
+
+
+class PronounConfig(DisaggregationModuleConfig):
+    def __init__(self, labels: Type[PronounLabels], pronouns: Dict[PronounLabels, Set[str]]):
+        self.labels = labels
+        self.pronouns = pronouns
 
 
 class Pronoun(DisaggregationModule):
@@ -18,9 +26,9 @@ class Pronoun(DisaggregationModule):
     def __init__(self, *args, **kwargs):
         super().__init__(module_id="pronoun", *args, **kwargs)
 
-    def _apply_config(self, config):
-        self.labels = config.get("labels", self.labels)
-        self.AVAILABLE_PRONOUNS = {**config.get("pronouns", {}), **self.AVAILABLE_PRONOUNS}
+    def _apply_config(self, config: PronounConfig):
+        self.labels = config.labels
+        self.AVAILABLE_PRONOUNS = {**config.pronouns, **self.AVAILABLE_PRONOUNS}
 
     def __call__(self, row, *args, **kwargs):
         text = row[self.column]
