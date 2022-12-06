@@ -1,16 +1,17 @@
 from typing import Callable
 
 import pytest
+from datasets import Dataset
 
-from disaggregators import DisaggregationModule, Disaggregator
-from tests.test_disaggregation_module import DummyModule
+from disaggregators import CustomDisaggregator, DisaggregationModule, Disaggregator
+from tests.test_disaggregation_module import DummyLabels, DummyModule
 
 
 class TestDisaggregator:
     @pytest.fixture(autouse=True)
     def mock_module_factory(self, mocker):
         mock_factory = mocker.MagicMock()
-        mock_factory.create_from_id.side_effect = lambda module_id=None, column=None: DummyModule(
+        mock_factory.create_module.side_effect = lambda module_id=None, column=None: DummyModule(
             module_id=module_id, column=column
         )
 
@@ -80,3 +81,24 @@ class TestDisaggregator:
     def test_get_fields(self, modules, expected):
         disagg = Disaggregator(modules)
         assert disagg.fields == expected
+
+
+@pytest.fixture
+def custom_module():
+    class CustomModule(CustomDisaggregator):
+        module_id = "custom"
+        labels = DummyLabels
+
+        def __call__(self, row, *args, **kwargs):
+            return {DummyLabels.DUMMY_ONE: "cat", DummyLabels.DUMMY_TWO: "dog"}
+
+    return CustomModule
+
+
+def test_inject_custom_module_subclass(custom_module):
+    disagg = Disaggregator(custom_module)
+    assert disagg.fields == {"custom.dummy-value-1", "custom.dummy-value-2"}
+
+    ds = Dataset.from_dict({"text": ["Hello world!"]}).map(disagg)
+    assert set(ds.features) == {"text", "custom.dummy-value-1", "custom.dummy-value-2"}
+    assert ds[0] == {"text": "Hello world!", "custom.dummy-value-1": "cat", "custom.dummy-value-2": "dog"}

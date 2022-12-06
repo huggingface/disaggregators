@@ -22,6 +22,7 @@ __version__ = "0.1.2.dev0"
 from packaging import version
 
 from disaggregators.disaggregation_modules import (
+    CustomDisaggregator,
     DisaggregationModule,
     DisaggregationModuleFactory,
     DisaggregationModuleLabels,

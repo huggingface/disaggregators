@@ -4,7 +4,7 @@ from disaggregators.disaggregation_modules.pronoun import Pronoun, PronounLabels
 def test_initialize():
     disagg_module = Pronoun(column=None)
     assert disagg_module.name == "pronoun"
-    assert disagg_module.labels == {PronounLabels.HE_HIM, PronounLabels.SHE_HER, PronounLabels.THEY_THEM}
+    assert set(disagg_module.labels) == {PronounLabels.HE_HIM, PronounLabels.SHE_HER, PronounLabels.THEY_THEM}
 
 
 def test_call_default_pronouns():

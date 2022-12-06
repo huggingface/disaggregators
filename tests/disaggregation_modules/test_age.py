@@ -6,7 +6,7 @@ from disaggregators.disaggregation_modules.age import Age, AgeLabels
 def test_initialize():
     disagg_module = Age(column=None)
     assert disagg_module.name == "age"
-    assert disagg_module.labels == {AgeLabels.CHILD, AgeLabels.YOUTH, AgeLabels.ADULT, AgeLabels.SENIOR}
+    assert set(disagg_module.labels) == {AgeLabels.CHILD, AgeLabels.YOUTH, AgeLabels.ADULT, AgeLabels.SENIOR}
 
 
 @pytest.mark.slow

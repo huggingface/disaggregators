@@ -1,21 +1,19 @@
-from typing import Callable, List, Optional, Set, Union
+from typing import Callable, List, Optional, Set, Type, Union
 
-from disaggregators.disaggregation_modules import DisaggregationModuleFactory
+from disaggregators.disaggregation_modules import CustomDisaggregator, DisaggregationModuleFactory
 
 
 class Disaggregator:
-    def __init__(self, module_ids: Optional[Union[str, List[str]]] = None, column: str = None):
-        if module_ids is None:
-            module_ids = []
+    def __init__(self, module: Optional[Union[str, Type[CustomDisaggregator], List[str]]] = None, column: str = None):
+        if module is None:
+            module = []
 
-        if isinstance(module_ids, str):
-            self.modules = [DisaggregationModuleFactory.create_from_id(module_ids, column=column)]
-        elif isinstance(module_ids, list):
-            self.modules = [
-                DisaggregationModuleFactory.create_from_id(module_id, column=column) for module_id in module_ids
-            ]
+        if not isinstance(module, list):
+            module_list = [module]
         else:
-            raise ValueError("Invalid argument passed for module")
+            module_list = module
+
+        self.modules = [DisaggregationModuleFactory.create_module(module, column=column) for module in module_list]
 
     def get_function(self) -> Callable:
         # Merge dicts - https://stackoverflow.com/a/3495395
