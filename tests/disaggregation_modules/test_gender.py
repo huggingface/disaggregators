@@ -6,7 +6,7 @@ from disaggregators.disaggregation_modules.gender import Gender, GenderLabels
 def test_initialize():
     disagg_module = Gender(column=None)
     assert disagg_module.name == "gender"
-    assert disagg_module.labels == {GenderLabels.MALE, GenderLabels.FEMALE}
+    assert set(disagg_module.labels) == {GenderLabels.MALE, GenderLabels.FEMALE}
 
 
 @pytest.mark.slow
