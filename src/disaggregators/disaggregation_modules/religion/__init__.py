@@ -14,7 +14,7 @@ class ReligionLabels(DisaggregationModuleLabels):
 
 
 class ReligionConfig(DisaggregationModuleConfig):
-    def __init__(self, labels: Type[ReligionLabels], threshold = None):
+    def __init__(self, labels: Type[ReligionLabels] = None, threshold: float = None):
         self.labels = labels
         self.threshold = threshold
 
