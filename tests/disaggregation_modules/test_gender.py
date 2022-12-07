@@ -1,6 +1,6 @@
 import pytest
 
-from disaggregators.disaggregation_modules.gender import Gender, GenderLabels
+from disaggregators.disaggregation_modules.gender import Gender, GenderConfig, GenderLabels
 
 
 def test_initialize():
@@ -27,3 +27,22 @@ def test_call_default(text, expected):
     disagg_module = Gender(column="text")
     results = disagg_module(data)
     assert results == {**base_labels, **{label: True for label in expected}}
+
+
+@pytest.mark.slow
+def test_call_custom():
+    class CustomGenderLabels(GenderLabels):
+        NON_BINARY = "non-binary"
+
+    _CUSTOM_WORD_LISTS = {CustomGenderLabels.NON_BINARY: ["clown"]}
+
+    data = {"text": "The sad clown went to the doctor."}
+    disagg_module = Gender(
+        config=GenderConfig(labels=CustomGenderLabels, word_lists=_CUSTOM_WORD_LISTS), column="text"
+    )
+    results = disagg_module(data)
+    assert results == {
+        CustomGenderLabels.MALE: False,
+        CustomGenderLabels.FEMALE: False,
+        CustomGenderLabels.NON_BINARY: True,
+    }
