@@ -16,10 +16,10 @@ style:
 # Run tests for the library
 
 test:
-	python -m pytest -v ./tests/
+	python -m pytest -n auto --dist=loadfile ./tests/
 
 test-fast:
-	python -m pytest -m "not slow" -n auto -v ./tests/
+	python -m pytest -n auto --dist=loadfile -m "not slow" ./tests/
 
 
 # Utility for Nox

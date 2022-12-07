@@ -8,9 +8,10 @@ from .disaggregation_module import (
 )
 from .gender import Gender
 from .pronoun import Pronoun
+from .religion import Religion
 
 
-AVAILABLE_MODULES = {"pronoun": Pronoun, "age": Age, "gender": Gender}
+AVAILABLE_MODULES = {"pronoun": Pronoun, "age": Age, "gender": Gender, "religion": Religion}
 
 __all__ = [
     "DisaggregationModule",

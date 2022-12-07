@@ -61,6 +61,7 @@ REQUIRED_PKGS = [
     "spacy",
     "datasets",
     "aenum",
+    "sentence-transformers",
 ]
 
 TESTS_REQUIRE = [

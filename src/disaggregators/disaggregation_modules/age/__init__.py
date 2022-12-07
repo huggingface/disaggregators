@@ -26,15 +26,16 @@ class Age(DisaggregationModule):
     AGES = [AgeLabels.CHILD, AgeLabels.YOUTH, AgeLabels.ADULT, AgeLabels.SENIOR]
     AGE_BREAKPOINTS = [0, 12, 20, 65]
     spacy_model = "en_core_web_lg"
-    try:
-        nlp = spacy.load(spacy_model, enable="ner")
-    except OSError:
-        raise ValueError(
-            f"This disaggregation module depends on the {spacy_model} model from spaCy.\n"
-            f"You can install it by running: python -m spacy download {spacy_model}"
-        )
 
     def __init__(self, *args, **kwargs):
+        try:
+            self.nlp = spacy.load(self.spacy_model, enable="ner")
+        except OSError:
+            raise ValueError(
+                f"This disaggregation module depends on the {self.spacy_model} model from spaCy.\n"
+                f"You can install it by running: python -m spacy download {self.spacy_model}"
+            )
+
         super().__init__(module_id="age", *args, **kwargs)
 
     def _apply_config(self, config: AgeConfig):
