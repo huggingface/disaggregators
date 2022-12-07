@@ -1,10 +1,19 @@
 from typing import Callable, List, Optional, Set, Type, Union
 
-from disaggregators.disaggregation_modules import CustomDisaggregator, DisaggregationModuleFactory
+from disaggregators.disaggregation_modules import (
+    CustomDisaggregator,
+    DisaggregationModule,
+    DisaggregationModuleFactory,
+)
 
 
 class Disaggregator:
-    def __init__(self, module: Optional[Union[str, Type[CustomDisaggregator], List[str]]] = None, *args, **kwargs):
+    def __init__(
+        self,
+        module: Optional[Union[str, DisaggregationModule, Type[CustomDisaggregator], List[str]]] = None,
+        *args,
+        **kwargs,
+    ):
         if module is None:
             module = []
 
