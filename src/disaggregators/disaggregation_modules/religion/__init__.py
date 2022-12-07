@@ -14,8 +14,9 @@ class ReligionLabels(DisaggregationModuleLabels):
 
 
 class ReligionConfig(DisaggregationModuleConfig):
-    def __init__(self, labels: Type[ReligionLabels]):
+    def __init__(self, labels: Type[ReligionLabels], threshold):
         self.labels = labels
+        self.threshold = threshold
 
 
 class Religion(DisaggregationModule):
@@ -38,6 +39,7 @@ class Religion(DisaggregationModule):
     def _apply_config(self, config: ReligionConfig):
         self.labels = config.labels
         self.religions = self.religions + list(config.labels)
+        self.threshold = config.threshold
 
     def __call__(self, row, *args, **kwargs):
         return_religion = {religion: False for religion in list(ReligionLabels)}
