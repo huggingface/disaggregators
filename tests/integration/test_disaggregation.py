@@ -11,11 +11,12 @@ def dataset():
     return Dataset.from_dict({"text": ["Hello world!", "Fizz buzz."]})
 
 
+class CustomPronounLabels(PronounLabels):
+    ZE_ZIR = "ze_zir"
+
+
 @pytest.fixture()
 def disaggregator():
-    class CustomPronounLabels(PronounLabels):
-        ZE_ZIR = "ze_zir"
-
     _CUSTOM_PRONOUN_MAPPING = {CustomPronounLabels.ZE_ZIR: {"ze", "zir", "zirs", "zirself"}}
 
     disagg_module = Pronoun(

@@ -16,7 +16,13 @@ style:
 # Run tests for the library
 
 test:
-	python -m pytest -n auto --dist=loadfile -s -v ./tests/
+	python -m pytest -v ./tests/
 
 test-fast:
-	python -m pytest -m "not slow" -n auto --dist=loadfile -s -v ./tests/
+	python -m pytest -m "not slow" -n auto -v ./tests/
+
+
+# Utility for Nox
+
+load_spacy_model:
+	spacy validate | grep en_core_web_lg || spacy download en_core_web_lg

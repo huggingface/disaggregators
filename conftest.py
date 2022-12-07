@@ -24,12 +24,13 @@ def pytest_generate_tests(metafunc):
 # Fixtures
 
 
+class DummyLabels(DisaggregationModuleLabels):
+    DUMMY_ONE = "dummy-value-1"
+    DUMMY_TWO = "dummy-value-2"
+
+
 @pytest.fixture
 def dummy_labels():
-    class DummyLabels(DisaggregationModuleLabels):
-        DUMMY_ONE = "dummy-value-1"
-        DUMMY_TWO = "dummy-value-2"
-
     return DummyLabels
 
 

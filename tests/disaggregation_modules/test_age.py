@@ -38,7 +38,7 @@ def test_call_custom():
         YOUNGER_THAN_NIMA = "younger_nima"
 
     examples = [
-        {"text": "Jenny 20 years old."},
+        {"text": "Jenny is 20 years old."},
         {"text": "Nima is 26 years old."},
         {"text": "Mark Knopfler is 73 years old."},
     ]
