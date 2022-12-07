@@ -1,9 +1,10 @@
 import re
 from bisect import bisect
+from typing import List, Type
 
 import spacy
 
-from ..disaggregation_module import DisaggregationModule, DisaggregationModuleLabels
+from ..disaggregation_module import DisaggregationModule, DisaggregationModuleConfig, DisaggregationModuleLabels
 
 
 class AgeLabels(DisaggregationModuleLabels):
@@ -13,21 +14,33 @@ class AgeLabels(DisaggregationModuleLabels):
     SENIOR = "senior"
 
 
+class AgeConfig(DisaggregationModuleConfig):
+    def __init__(self, labels: Type[AgeLabels], ages: List, breakpoints: List):
+        self.labels = labels
+        self.ages = ages
+        self.breakpoints = breakpoints
+
+
 class Age(DisaggregationModule):
     labels = AgeLabels
+    AGES = [AgeLabels.CHILD, AgeLabels.YOUTH, AgeLabels.ADULT, AgeLabels.SENIOR]
+    AGE_BREAKPOINTS = [0, 12, 20, 65]
+    spacy_model = "en_core_web_lg"
+    try:
+        nlp = spacy.load(spacy_model, enable="ner")
+    except OSError:
+        raise ValueError(
+            f"This disaggregation module depends on the {spacy_model} model from spaCy.\n"
+            f"You can install it by running: python -m spacy download {spacy_model}"
+        )
 
     def __init__(self, *args, **kwargs):
         super().__init__(module_id="age", *args, **kwargs)
-        self.AGES = [AgeLabels.CHILD, AgeLabels.YOUTH, AgeLabels.ADULT, AgeLabels.SENIOR]
-        self.AGE_BREAKPOINTS = [0, 12, 20, 65]
-        spacy_model = "en_core_web_lg"
-        try:
-            self.nlp = spacy.load(spacy_model, enable="ner")
-        except OSError:
-            raise ValueError(
-                f"This disaggregation module depends on the {spacy_model} model from spaCy.\n"
-                f"You can install it by running: python -m spacy download {spacy_model}"
-            )
+
+    def _apply_config(self, config: AgeConfig):
+        self.labels = config.labels
+        self.AGES = config.ages
+        self.AGE_BREAKPOINTS = config.breakpoints
 
     def __call__(self, row, *args, **kwargs):
         return_ages = {age: False for age in self.AGES}
