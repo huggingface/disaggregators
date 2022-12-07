@@ -20,15 +20,16 @@ class ReligionConfig(DisaggregationModuleConfig):
 
 class Religion(DisaggregationModule):
     labels = ReligionLabels
+    threshold = 0.14  # Arbitrary threshold, hand-tuned.
+    religions = [
+        ReligionLabels.JUDAISM,
+        ReligionLabels.ISLAM,
+        ReligionLabels.BUDDHISM,
+        ReligionLabels.CHRISTIANITY,
+    ]
 
     def __init__(self, *args, **kwargs):
         self.model = SentenceTransformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
-        self.religions = [
-            ReligionLabels.JUDAISM,
-            ReligionLabels.ISLAM,
-            ReligionLabels.BUDDHISM,
-            ReligionLabels.CHRISTIANITY,
-        ]
 
         super().__init__(module_id="religion", *args, **kwargs)
 
@@ -44,7 +45,7 @@ class Religion(DisaggregationModule):
         query = self.model.encode(row[self.column], convert_to_tensor=True)
         religion_hit = semantic_search(query, self.embeddings, top_k=1)[0][0]
 
-        if religion_hit["score"] > 0.14:  # Arbitrary threshold, hand-tuned.
+        if religion_hit["score"] > self.threshold:
             return_religion.update({self.religions[religion_hit["corpus_id"]]: True})
 
         return return_religion
