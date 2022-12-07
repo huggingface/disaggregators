@@ -14,7 +14,7 @@ class ReligionLabels(DisaggregationModuleLabels):
 
 
 class ReligionConfig(DisaggregationModuleConfig):
-    def __init__(self, labels: Type[ReligionLabels], threshold):
+    def __init__(self, labels: Type[ReligionLabels], threshold = None):
         self.labels = labels
         self.threshold = threshold
 
@@ -37,9 +37,11 @@ class Religion(DisaggregationModule):
         self.embeddings = self.model.encode([str(religion) for religion in self.religions], convert_to_tensor=True)
 
     def _apply_config(self, config: ReligionConfig):
-        self.labels = config.labels
-        self.religions = self.religions + list(config.labels)
-        self.threshold = config.threshold
+        if config.labels:
+            self.labels = config.labels
+            self.religions = self.religions + list(config.labels)
+
+        self.threshold = config.threshold or self.threshold
 
     def __call__(self, row, *args, **kwargs):
         return_religion = {religion: False for religion in list(ReligionLabels)}
