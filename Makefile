@@ -19,7 +19,7 @@ test:
 	python -m pytest -v ./tests/
 
 test-fast:
-	python -m pytest -m "not slow" -n auto -v ./tests/
+	python -m pytest -m "not slow" -v ./tests/
 
 
 # Utility for Nox

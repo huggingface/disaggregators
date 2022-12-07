@@ -21,16 +21,6 @@ class GenderConfig(DisaggregationModuleConfig):
 class Gender(DisaggregationModule):
     labels = GenderLabels
     spacy_model = "en_core_web_lg"
-    gender_df = load_dataset("md_gender_bias", "gendered_words", split="train").to_pandas()
-    gender_df.columns = [GenderLabels.MALE, GenderLabels.FEMALE]
-
-    try:
-        nlp = spacy.load(spacy_model)
-    except OSError:
-        raise ValueError(
-            f"This disaggregation module depends on the {spacy_model} model from spaCy.\n"
-            f"You can install it by running: python -m spacy download {spacy_model}"
-        )
 
     citations = [
         """
@@ -52,6 +42,17 @@ class Gender(DisaggregationModule):
     ]
 
     def __init__(self, *args, **kwargs):
+        self.gender_df = load_dataset("md_gender_bias", "gendered_words", split="train").to_pandas()
+        self.gender_df.columns = [GenderLabels.MALE, GenderLabels.FEMALE]
+
+        try:
+            self.nlp = spacy.load(self.spacy_model)
+        except OSError:
+            raise ValueError(
+                f"This disaggregation module depends on the {self.spacy_model} model from spaCy.\n"
+                f"You can install it by running: python -m spacy download {self.spacy_model}"
+            )
+
         super().__init__(module_id="gender", *args, **kwargs)
 
     def _apply_config(self, config: GenderConfig):

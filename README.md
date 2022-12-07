@@ -43,7 +43,7 @@ The resulting dataset can now be used for data exploration and disaggregated mod
 
 Development requirements can be installed with `pip install .[dev]`. See the `Makefile` for useful targets, such as code quality and test running.
 
-To run tests locally across multiple Python versions (3.8, 3.9, and 3.10), ensure that you have all the Python versions available and then run `nox`. Note that this is quite slow, so it's only worth doing to double-check your code before you open a Pull Request.
+To run tests locally across multiple Python versions (3.8, 3.9, and 3.10), ensure that you have all the Python versions available and then run `nox -r`. Note that this is quite slow, so it's only worth doing to double-check your code before you open a Pull Request.
 
 ## Contact
 
