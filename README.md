@@ -2,9 +2,11 @@
 
 [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face%20Spaces-Demo-blue)](https://huggingface.co/spaces/society-ethics/disaggregators)
 
-The `disaggregators` library allows you to easily add new features to your datasets to enable disaggregated data exploration and disaggregated model evaluation. `disaggregators` is preloaded with disaggregation modules intended for text and image data. [Visit the demo!](https://huggingface.co/spaces/society-ethics/disaggregators)
+The `disaggregators` library allows you to easily add new features to your datasets to enable disaggregated data exploration and disaggregated model evaluation. `disaggregators` is preloaded with disaggregation modules for text data, with image modules coming soon!
 
-`disaggregators` is intended to be used with 🤗 Datasets, but should work with any other "mappable" interface to a dataset. 
+This library is intended to be used with [🤗 Datasets](https://github.com/huggingface/datasets), but should work with any other "mappable" interface to a dataset. 
+
+[Visit the demo!](https://huggingface.co/spaces/society-ethics/disaggregators)
 
 ## Requirements and Installation
 
