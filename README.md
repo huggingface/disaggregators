@@ -1,6 +1,8 @@
-# Disaggregators
+# 🤗 Disaggregators
 
-The `disaggregators` library allows you to easily add new features to your datasets to enable disaggregated data exploration and disaggregated model evaluation. `disaggregators` is preloaded with disaggregation modules intended for text and image data.
+[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face%20Spaces-Demo-blue)](https://huggingface.co/spaces/society-ethics/disaggregators)
+
+The `disaggregators` library allows you to easily add new features to your datasets to enable disaggregated data exploration and disaggregated model evaluation. `disaggregators` is preloaded with disaggregation modules intended for text and image data. [Visit the demo!](https://huggingface.co/spaces/society-ethics/disaggregators)
 
 `disaggregators` is intended to be used with 🤗 Datasets, but should work with any other "mappable" interface to a dataset. 
 
@@ -17,7 +19,7 @@ To install directly from this GitHub repo, use the following command:
 pip install git+https://github.com/huggingface/disaggregators.git
 ```
 
-# Usage
+## Usage
 
 You will likely want to use 🤗 Datasets with `disaggregators`.
 
@@ -25,7 +27,7 @@ You will likely want to use 🤗 Datasets with `disaggregators`.
 pip install datasets
 ```
 
-The snippet below loads the IMDB dataset from the Hugging Face Hub, and initializes a disaggregator for "pronoun" that will run on the IMDB dataset's "text" column. Note that if you would like to run multiple disaggregations, you can pass a list to the `Disaggregator` constructor (e.g. `Disaggregator(["pronoun", "sentiment"], column="text")`). We then use the 🤗 Datasets `map` method to apply the disaggregation to the dataset.
+The snippet below loads the IMDB dataset from the Hugging Face Hub, and initializes a disaggregator for "pronoun" that will run on the IMDB dataset's "text" column. If you would like to run multiple disaggregations, you can pass a list to the `Disaggregator` constructor (e.g. `Disaggregator(["pronoun", "sentiment"], column="text")`). We then use the 🤗 Datasets `map` method to apply the disaggregation to the dataset.
 
 ```python
 from disaggregators import Disaggregator
@@ -38,6 +40,84 @@ ds = dataset.map(disaggregator)  # New boolean columns are added for she/her, he
 ```
 
 The resulting dataset can now be used for data exploration and disaggregated model evaluation.
+
+You can also run disaggregations on Pandas DataFrames with `.apply` and `.merge`:
+
+```python
+from disaggregators import Disaggregator
+import pandas as pd
+df = pd.DataFrame({"text": ["They went to the park."]})
+
+disaggregator = Disaggregator("pronoun", column="text")
+
+new_cols = df.apply(disaggregator, axis=1)
+df = pd.merge(df, pd.json_normalize(new_cols), left_index=True, right_index=True)
+```
+
+### Available Disaggregation Modules
+
+The following modules are currently available:
+
+- `"age"`
+- `"gender"`
+- `"pronoun"`
+- `"religion"`
+
+Note that `disaggregators` is in active development, and that these (and future) modules are subject to changing interfaces and implementations at any time before a `1.0.0` release. Each module provides its own method for overriding the default configuration, with the general interface documented below.
+
+### Module Configurations
+
+Modules may make certain variables and functionality configurable. If you'd like to configure a module, import the module, its labels, and its config class. Then, override the labels and set the configuration as needed while instantiating the module. Once instantiated, you can pass the module to the `Disaggregator`. The example below shows this with the `Age` module.
+
+```python
+from disaggregators import Disaggregator
+from disaggregators.disaggregation_modules.age import Age, AgeLabels, AgeConfig
+
+class MeSHAgeLabels(AgeLabels):
+    INFANT = "infant"
+    CHILD_PRESCHOOL = "child_preschool"
+    CHILD = "child"
+    ADOLESCENT = "adolescent"
+    ADULT = "adult"
+    MIDDLE_AGED = "middle_aged"
+    AGED = "aged"
+    AGED_80_OVER = "aged_80_over"
+
+age = Age(
+    config=AgeConfig(
+        labels=MeSHAgeLabels,
+        ages=[list(MeSHAgeLabels)],
+        breakpoints=[0, 2, 5, 12, 18, 44, 64, 79]
+    ),
+    column="question"
+)
+
+disaggregator = Disaggregator([age, "gender"], column="question")
+```
+
+### Custom Modules
+
+Custom modules can be created by extending the `CustomDisaggregator`. All custom modules must have `labels` and a `module_id`, and must implement a `__call__` method.
+
+```python
+from disaggregators import Disaggregator, DisaggregationModuleLabels, CustomDisaggregator
+
+class TabsSpacesLabels(DisaggregationModuleLabels):
+    TABS = "tabs"
+    SPACES = "spaces"
+
+class TabsSpaces(CustomDisaggregator):
+    module_id = "tabs_spaces"
+    labels = TabsSpacesLabels
+
+    def __call__(self, row, *args, **kwargs):
+        if "\t" in row[self.column]:
+            return {self.labels.TABS: True, self.labels.SPACES: False}
+        else:
+            return {self.labels.TABS: False, self.labels.SPACES: True}
+
+disaggregator = Disaggregator(TabsSpaces, column="text")
+```
 
 ## Development
 
