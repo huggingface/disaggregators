@@ -1,12 +1,22 @@
-# 🤗 Disaggregators
+<p align="center">
+    <br>
+    <img src="https://user-images.githubusercontent.com/6765188/206785111-b7724be3-6460-4092-9561-9fc2cd522320.png" width="400"/>
+    <br>
+<p>
 
-[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face%20Spaces-Demo-blue)](https://huggingface.co/spaces/society-ethics/disaggregators)
+<p align="center">
+    <a href="https://huggingface.co/spaces/society-ethics/disaggregators">
+        <img alt="GitHub" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face%20Spaces-Demo-blue">
+    </a>
+    </a>
+    <a href="https://github.com/huggingface/transformers/releases">
+        <img alt="GitHub release" src="https://img.shields.io/github/release/huggingface/disaggregators.svg">
+    </a>
+</p>
 
 The `disaggregators` library allows you to easily add new features to your datasets to enable disaggregated data exploration and disaggregated model evaluation. `disaggregators` is preloaded with disaggregation modules for text data, with image modules coming soon!
 
 This library is intended to be used with [🤗 Datasets](https://github.com/huggingface/datasets), but should work with any other "mappable" interface to a dataset. 
-
-[Visit the demo!](https://huggingface.co/spaces/society-ethics/disaggregators)
 
 ## Requirements and Installation
 
