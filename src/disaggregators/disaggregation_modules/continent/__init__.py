@@ -72,8 +72,11 @@ class Continent(DisaggregationModule):
         if not len(places) > 0:
             return return_continent
 
-        continent = [cl[0] for cl in self.continent_lists if places[0] in cl][0]
-        label = getattr(ContinentLabels, continent.upper())
-        return_continent.update({label: True})
+        continent_search = [cl[0] for cl in self.continent_lists if places[0] in cl]
+
+        if len(continent_search) > 0:
+            continent = continent_search[0]
+            label = getattr(ContinentLabels, continent.upper())
+            return_continent.update({label: True})
 
         return return_continent
