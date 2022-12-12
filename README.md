@@ -75,6 +75,7 @@ The following modules are currently available:
 - `"gender"`
 - `"pronoun"`
 - `"religion"`
+- `"continent"`
 
 Note that `disaggregators` is in active development, and that these (and future) modules are subject to changing interfaces and implementations at any time before a `1.0.0` release. Each module provides its own method for overriding the default configuration, with the general interface documented below.
 
