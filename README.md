@@ -1,6 +1,6 @@
 <p align="center">
     <br>
-    <img src="https://user-images.githubusercontent.com/6765188/206785111-b7724be3-6460-4092-9561-9fc2cd522320.png" width="400"/>
+    <img alt="Hugging Face Disaggregators" src="https://user-images.githubusercontent.com/6765188/206785111-b7724be3-6460-4092-9561-9fc2cd522320.png" width="400"/>
     <br>
 <p>
 
@@ -8,13 +8,12 @@
     <a href="https://huggingface.co/spaces/society-ethics/disaggregators">
         <img alt="GitHub" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face%20Spaces-Demo-blue">
     </a>
-    </a>
     <a href="https://github.com/huggingface/transformers/releases">
         <img alt="GitHub release" src="https://img.shields.io/github/release/huggingface/disaggregators.svg">
     </a>
 </p>
 
-> ⚠️ Please note: This library is in early development, and the disaggregation modules that are included are proofs of concept that are _not_ production-ready. Rigorously tested versions will be released in the future, so stay tuned. [We'd love your feedback in the meantime!](https://github.com/huggingface/disaggregators/discussions/23)
+> ⚠️ Please note: This library is in early development, and the disaggregation modules that are included are proofs of concept that are _not_ production-ready. Additionally, all APIs are subject to breaking changes any time before a 1.0.0 release. Rigorously tested versions of the included modules will be released in the future, so stay tuned. [We'd love your feedback in the meantime!](https://github.com/huggingface/disaggregators/discussions/23)
 
 The `disaggregators` library allows you to easily add new features to your datasets to enable disaggregated data exploration and disaggregated model evaluation. `disaggregators` is preloaded with disaggregation modules for text data, with image modules coming soon!
 
@@ -22,7 +21,7 @@ This library is intended to be used with [🤗 Datasets](https://github.com/hugg
 
 ## Requirements and Installation
 
-`disaggregators` has been tested on Python 3.10.8.
+`disaggregators` has been tested on Python 3.8, 3.9, and 3.10.
 
 `pip install disaggregators` will fetch the latest release from PyPI.
 
