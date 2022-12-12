@@ -60,7 +60,7 @@ REQUIRED_PKGS = [
     "packaging",
     "spacy",
     "datasets",
-    "aenum",
+    "aenum>=3.1",
     "sentence-transformers",
     "geograpy3",
     "nltk",
