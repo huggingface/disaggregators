@@ -10,14 +10,16 @@ from disaggregators.disaggregation_modules import (
 class Disaggregator:
     def __init__(
         self,
-        module: Optional[Union[
-            str,
-            List[str],
-            DisaggregationModule,
-            List[DisaggregationModule],
-            Type[CustomDisaggregator],
-            List[Type[CustomDisaggregator]],
-        ]] = None,
+        module: Optional[
+            Union[
+                str,
+                List[str],
+                DisaggregationModule,
+                List[DisaggregationModule],
+                Type[CustomDisaggregator],
+                List[Type[CustomDisaggregator]],
+            ]
+        ] = None,
         *args,
         **kwargs,
     ):

@@ -62,6 +62,9 @@ REQUIRED_PKGS = [
     "datasets",
     "aenum",
     "sentence-transformers",
+    "geograpy3",
+    "nltk",
+    "requests",
 ]
 
 TESTS_REQUIRE = [
