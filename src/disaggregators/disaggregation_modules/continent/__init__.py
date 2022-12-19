@@ -67,7 +67,7 @@ class Continent(DisaggregationModule):
     def __call__(self, row, *args, **kwargs):
         return_continent = {continent: False for continent in list(ContinentLabels)}
 
-        places = geograpy.get_place_context(text=row[self.column]).countries
+        places = geograpy.get_geoPlace_context(text=row[self.column]).countries
 
         if not len(places) > 0:
             return return_continent
