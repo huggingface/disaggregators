@@ -2,8 +2,10 @@ from abc import ABC, abstractmethod
 from typing import List, Optional, Type, Union
 
 from aenum import Constant
+from spacy import Language
 
 from disaggregators import disaggregation_modules
+from disaggregators.utils.spacy_utils import language_check
 
 
 class DisaggregationModuleLabels(Constant):
@@ -15,16 +17,34 @@ class DisaggregationModuleConfig:
 
 
 class DisaggregationModule(ABC):
-    def __init__(self, module_id: str, column: Optional[str], config: DisaggregationModuleConfig = None):
+    required_spacy_components: List[str] = ["tokenizer", "tok2vec"]
+
+    def __init__(
+        self,
+        language: Language,
+        module_id: str,
+        config: DisaggregationModuleConfig = None,
+    ):
+        self.nlp = language_check(language)
+
         self.name = module_id
-        self.column = column
+
         self.citations: List[str] = []
 
         if config:
             self._apply_config(config)
 
     @abstractmethod
-    def __call__(self, row, *args, **kwargs):
+    def __call__(self, row: str, *args, **kwargs):
+        raise NotImplementedError()
+
+    def process_doc(self, doc: str, *args, **kwargs):
+        raise NotImplementedError()
+
+    def pipe(self, rows, *args, **kwargs):
+        raise NotImplementedError()
+
+    def pipe_docs(self, docs, *args, **kwargs):
         raise NotImplementedError()
 
     @property
@@ -62,13 +82,23 @@ class CustomDisaggregator(DisaggregationModule, ABC):
 
 class DisaggregationModuleFactory:
     @staticmethod
-    def create_module(module: Union[str, Type[CustomDisaggregator], DisaggregationModule], *args, **kwargs):
+    def create_module(
+        module: Union[str, Type[CustomDisaggregator], DisaggregationModule],
+        language: Optional[Union["spacy.Language", str]] = None,
+        *args,
+        **kwargs,
+    ):
+        nlp = language_check(language)
         if isinstance(module, str):
-            return DisaggregationModuleFactory.create_from_id(module, *args, **kwargs)
+            return DisaggregationModuleFactory.create_from_id(
+                module, language=nlp, *args, **kwargs
+            )
         elif isinstance(module, DisaggregationModule):
             return module
         elif issubclass(module, CustomDisaggregator):
-            return DisaggregationModuleFactory.create_from_class(module, *args, **kwargs)
+            return DisaggregationModuleFactory.create_from_class(
+                module, language=nlp, *args, **kwargs
+            )
         else:
             raise ValueError("Invalid module type received.")
 
@@ -80,5 +110,7 @@ class DisaggregationModuleFactory:
         return disaggregation_modules.AVAILABLE_MODULES[module_id](*args, **kwargs)
 
     @staticmethod
-    def create_from_class(module: Type[CustomDisaggregator], *args, **kwargs) -> DisaggregationModule:
+    def create_from_class(
+        module: Type[CustomDisaggregator], *args, **kwargs
+    ) -> DisaggregationModule:
         return module(*args, **kwargs)

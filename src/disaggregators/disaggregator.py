@@ -5,6 +5,7 @@ from disaggregators.disaggregation_modules import (
     DisaggregationModule,
     DisaggregationModuleFactory,
 )
+from disaggregators.utils.spacy_utils import language_check
 
 
 class Disaggregator:
@@ -20,6 +21,7 @@ class Disaggregator:
                 List[Type[CustomDisaggregator]],
             ]
         ] = None,
+        language: Optional[Union["spacy.Language", str]] = None,
         *args,
         **kwargs,
     ):
@@ -31,7 +33,24 @@ class Disaggregator:
         else:
             module_list = module
 
-        self.modules = [DisaggregationModuleFactory.create_module(module, *args, **kwargs) for module in module_list]
+        self.nlp = language_check(language)
+
+        self.modules = [
+            DisaggregationModuleFactory.create_module(
+                module, language=self.nlp, *args, **kwargs
+            )
+            for module in module_list
+        ]
+
+        required_components = []
+        for module in self.modules:
+            required_components += module.required_spacy_components
+
+        self.disabled_components = [
+            component
+            for component in self.nlp.component_names
+            if component not in required_components
+        ]
 
     def get_function(self) -> Callable:
         # Merge dicts - https://stackoverflow.com/a/3495395
@@ -42,8 +61,21 @@ class Disaggregator:
         }
 
     def __call__(self, x) -> Callable:
-        return self.get_function()(x)
+        doc = self.nlp(x, disable=self.disabled_components)
+        [module.process_doc(doc) for module in self.modules]
+        return doc
+
+    def pipe(self, x) -> Callable:
+        docs = self.nlp.pipe(x, disable=self.disabled_components)
+        [module.pipe_docs(docs) for module in self.modules]
+        return docs
 
     @property
     def fields(self) -> Set:
-        return {*[f"{module.name}.{str(label)}" for module in self.modules for label in module.labels]}
+        return {
+            *[
+                f"{module.name}.{str(label)}"
+                for module in self.modules
+                for label in module.labels
+            ]
+        }
